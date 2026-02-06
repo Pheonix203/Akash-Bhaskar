@@ -1,0 +1,5 @@
+{
+  "name": "LuminaCard - AI Flashcard Generator",
+  "description": "Upload documents and instantly transform them into beautiful, study-ready flashcards using Gemini AI.",
+  "requestFramePermissions": []
+}
