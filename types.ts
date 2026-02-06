@@ -19,3 +19,13 @@ export enum AppStatus {
   ERROR = 'ERROR',
   SUCCESS = 'SUCCESS'
 }
+
+export interface Theme {
+  name: string;
+  primary: string; // "79 70 229"
+  primaryHover: string;
+  secondary: string;
+  shadow: string;
+}
+
+export type FlipAnimation = '3d-flip' | 'fade' | 'slide' | 'zoom';

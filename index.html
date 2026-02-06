@@ -8,24 +8,110 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --theme-primary: 79 70 229; /* Indigo 600 */
+            --theme-primary-hover: 67 56 202; /* Indigo 700 */
+            --theme-secondary: 238 242 255; /* Indigo 50 */
+            --theme-text: 79 70 229;
+            --theme-shadow: 199 210 254; /* Indigo 200 */
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
         }
-        .flashcard-inner {
+
+        /* 3D Flip Base */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        
+        /* 3D Flip Animation */
+        .anim-3d-flip .flashcard-inner {
             transition: transform 0.6s;
             transform-style: preserve-3d;
         }
-        .flashcard-flipped .flashcard-inner {
+        .anim-3d-flip.flashcard-flipped .flashcard-inner {
             transform: rotateY(180deg);
         }
-        .flashcard-front, .flashcard-back {
+        .anim-3d-flip .flashcard-front, .anim-3d-flip .flashcard-back {
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
-        .flashcard-back {
+        .anim-3d-flip .flashcard-back {
             transform: rotateY(180deg);
         }
+
+        /* Fade Animation */
+        .anim-fade .flashcard-front, .anim-fade .flashcard-back {
+            transition: opacity 0.4s ease-in-out;
+        }
+        .anim-fade .flashcard-front {
+            opacity: 1;
+            z-index: 2;
+        }
+        .anim-fade.flashcard-flipped .flashcard-front {
+            opacity: 0;
+            z-index: 1;
+        }
+        .anim-fade .flashcard-back {
+            opacity: 0;
+            z-index: 1;
+        }
+        .anim-fade.flashcard-flipped .flashcard-back {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        /* Slide Animation */
+        .anim-slide {
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        .anim-slide .flashcard-front, .anim-slide .flashcard-back {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .anim-slide .flashcard-front {
+            transform: translateX(0);
+        }
+        .anim-slide.flashcard-flipped .flashcard-front {
+            transform: translateX(-100%);
+        }
+        .anim-slide .flashcard-back {
+            transform: translateX(100%);
+        }
+        .anim-slide.flashcard-flipped .flashcard-back {
+            transform: translateX(0);
+        }
+
+        /* Zoom Animation */
+        .anim-zoom .flashcard-front, .anim-zoom .flashcard-back {
+            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        .anim-zoom .flashcard-front {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .anim-zoom.flashcard-flipped .flashcard-front {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        .anim-zoom .flashcard-back {
+            transform: scale(1.2);
+            opacity: 0;
+        }
+        .anim-zoom.flashcard-flipped .flashcard-back {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        /* Dynamic Theme Utilities */
+        .bg-theme-primary { background-color: rgb(var(--theme-primary)); }
+        .bg-theme-primary-hover:hover { background-color: rgb(var(--theme-primary-hover)); }
+        .bg-theme-secondary { background-color: rgb(var(--theme-secondary)); }
+        .text-theme-primary { color: rgb(var(--theme-primary)); }
+        .border-theme-primary { border-color: rgb(var(--theme-primary)); }
+        .shadow-theme { --tw-shadow-color: rgb(var(--theme-shadow)); --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
     </style>
 <script type="importmap">
 {
@@ -33,7 +119,8 @@
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
-    "@google/genai": "https://esm.sh/@google/genai@^1.40.0"
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "jspdf": "https://esm.sh/jspdf@^2.5.1"
   }
 }
 </script>
