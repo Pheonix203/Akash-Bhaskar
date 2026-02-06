@@ -9,6 +9,7 @@ export interface Flashcard {
 export interface GenerationResult {
   flashcards: Flashcard[];
   summary: string;
+  keyTakeaways: string[];
 }
 
 export enum AppStatus {

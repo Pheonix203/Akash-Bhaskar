@@ -22,8 +22,8 @@ export const generateFlashcardsFromDocument = async (
           },
           {
             text: `Analyze this document and create ${count} high-quality flashcards for learning. 
-            Focus on key concepts, definitions, and important facts. 
-            Also provide a short 2-sentence summary of the document content.`,
+            Also, provide a comprehensive summary of the document and a list of 5-7 key takeaways or bullet points.
+            Focus on key concepts, definitions, and important facts.`,
           },
         ],
       },
@@ -35,7 +35,12 @@ export const generateFlashcardsFromDocument = async (
         properties: {
           summary: {
             type: Type.STRING,
-            description: "A short summary of the document content.",
+            description: "A comprehensive summary of the document content.",
+          },
+          keyTakeaways: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING },
+            description: "A list of the most important points or concepts.",
           },
           flashcards: {
             type: Type.ARRAY,
@@ -50,7 +55,7 @@ export const generateFlashcardsFromDocument = async (
             },
           },
         },
-        required: ["summary", "flashcards"],
+        required: ["summary", "flashcards", "keyTakeaways"],
       },
     },
   });
@@ -72,6 +77,7 @@ export const generateFlashcardsFromDocument = async (
 
   return {
     summary: result.summary,
+    keyTakeaways: result.keyTakeaways || [],
     flashcards: flashcardsWithIds
   };
 };
