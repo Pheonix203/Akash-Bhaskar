@@ -1,24 +1,20 @@
 
 import React, { useState } from 'react';
-import { Flashcard as FlashcardType, FlipAnimation } from '../types';
+import { Flashcard as FlashcardType } from '../types';
 
 interface Props {
   card: FlashcardType;
-  animation: FlipAnimation;
 }
 
-const Flashcard: React.FC<Props> = ({ card, animation }) => {
+const Flashcard: React.FC<Props> = ({ card }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-
-  // Define animation-specific wrapper classes
-  const animClass = `anim-${animation}`;
 
   return (
     <div 
-      className={`relative h-64 w-full perspective-1000 cursor-pointer group ${animClass} ${isFlipped ? 'flashcard-flipped' : ''}`}
+      className={`relative h-64 w-full perspective-1000 cursor-pointer group ${isFlipped ? 'flashcard-flipped' : ''}`}
       onClick={() => setIsFlipped(!isFlipped)}
     >
-      <div className="flashcard-inner relative w-full h-full text-center shadow-lg rounded-2xl overflow-hidden">
+      <div className="flashcard-inner relative w-full h-full text-center shadow-lg rounded-2xl">
         {/* Front Face */}
         <div className="flashcard-front absolute w-full h-full bg-white rounded-2xl border border-slate-200 p-8 flex flex-col items-center justify-center">
           {card.category && (

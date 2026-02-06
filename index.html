@@ -21,88 +21,27 @@
             background-color: #f8fafc;
         }
 
-        /* 3D Flip Base */
+        /* 3D Flip Animation */
         .perspective-1000 {
             perspective: 1000px;
         }
         
-        /* 3D Flip Animation */
-        .anim-3d-flip .flashcard-inner {
+        .flashcard-inner {
             transition: transform 0.6s;
             transform-style: preserve-3d;
         }
-        .anim-3d-flip.flashcard-flipped .flashcard-inner {
+        
+        .flashcard-flipped .flashcard-inner {
             transform: rotateY(180deg);
         }
-        .anim-3d-flip .flashcard-front, .anim-3d-flip .flashcard-back {
+        
+        .flashcard-front, .flashcard-back {
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
-        .anim-3d-flip .flashcard-back {
+        
+        .flashcard-back {
             transform: rotateY(180deg);
-        }
-
-        /* Fade Animation */
-        .anim-fade .flashcard-front, .anim-fade .flashcard-back {
-            transition: opacity 0.4s ease-in-out;
-        }
-        .anim-fade .flashcard-front {
-            opacity: 1;
-            z-index: 2;
-        }
-        .anim-fade.flashcard-flipped .flashcard-front {
-            opacity: 0;
-            z-index: 1;
-        }
-        .anim-fade .flashcard-back {
-            opacity: 0;
-            z-index: 1;
-        }
-        .anim-fade.flashcard-flipped .flashcard-back {
-            opacity: 1;
-            z-index: 2;
-        }
-
-        /* Slide Animation */
-        .anim-slide {
-            overflow: hidden;
-            border-radius: 1rem;
-        }
-        .anim-slide .flashcard-front, .anim-slide .flashcard-back {
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .anim-slide .flashcard-front {
-            transform: translateX(0);
-        }
-        .anim-slide.flashcard-flipped .flashcard-front {
-            transform: translateX(-100%);
-        }
-        .anim-slide .flashcard-back {
-            transform: translateX(100%);
-        }
-        .anim-slide.flashcard-flipped .flashcard-back {
-            transform: translateX(0);
-        }
-
-        /* Zoom Animation */
-        .anim-zoom .flashcard-front, .anim-zoom .flashcard-back {
-            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
-        }
-        .anim-zoom .flashcard-front {
-            transform: scale(1);
-            opacity: 1;
-        }
-        .anim-zoom.flashcard-flipped .flashcard-front {
-            transform: scale(0.8);
-            opacity: 0;
-        }
-        .anim-zoom .flashcard-back {
-            transform: scale(1.2);
-            opacity: 0;
-        }
-        .anim-zoom.flashcard-flipped .flashcard-back {
-            transform: scale(1);
-            opacity: 1;
         }
         
         /* Dynamic Theme Utilities */

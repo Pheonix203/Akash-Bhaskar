@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Flashcard from './components/Flashcard';
-import { AppStatus, GenerationResult, FlipAnimation } from './types';
+import QuizMode from './components/QuizMode';
+import StudyMode from './components/StudyMode';
+import { AppStatus, GenerationResult } from './types';
 import { generateFlashcardsFromDocument, fileToBase64 } from './services/geminiService';
 import { jsPDF } from 'jspdf';
 
@@ -21,7 +23,6 @@ const App: React.FC = () => {
   const [cardCount, setCardCount] = useState(10);
   const [isExporting, setIsExporting] = useState(false);
   const [themeName, setThemeName] = useState('Indigo');
-  const [animation, setAnimation] = useState<FlipAnimation>('3d-flip');
 
   useEffect(() => {
     const theme = THEMES[themeName];
@@ -126,17 +127,37 @@ const App: React.FC = () => {
     setError(null);
   };
 
+  const startQuiz = () => {
+    if (result) setStatus(AppStatus.QUIZ);
+  };
+
+  const startStudy = () => {
+    if (result) setStatus(AppStatus.STUDY);
+  };
+
+  const exitMode = () => {
+    setStatus(AppStatus.SUCCESS);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Header 
         currentTheme={themeName} 
         onThemeChange={setThemeName} 
-        currentAnimation={animation}
-        onAnimationChange={setAnimation}
+        onPlayDeck={startQuiz}
+        hasResult={!!result}
       />
 
+      {status === AppStatus.QUIZ && result && (
+        <QuizMode flashcards={result.flashcards} onExit={exitMode} />
+      )}
+
+      {status === AppStatus.STUDY && result && (
+        <StudyMode flashcards={result.flashcards} onExit={exitMode} />
+      )}
+
       <main className="flex-grow container mx-auto max-w-7xl px-4 py-8 md:py-12">
-        {status === AppStatus.IDLE || status === AppStatus.ERROR ? (
+        {(status === AppStatus.IDLE || status === AppStatus.ERROR) ? (
           <div className="max-w-2xl mx-auto text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="space-y-4">
               <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
@@ -187,7 +208,7 @@ const App: React.FC = () => {
               </div>
             )}
           </div>
-        ) : status === AppStatus.UPLOADING || status === AppStatus.GENERATING ? (
+        ) : (status === AppStatus.UPLOADING || status === AppStatus.GENERATING) ? (
           <div className="max-w-md mx-auto py-20 text-center space-y-6">
             <div className="relative w-24 h-24 mx-auto">
               <div className="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
@@ -202,7 +223,7 @@ const App: React.FC = () => {
               </p>
             </div>
           </div>
-        ) : (
+        ) : (status === AppStatus.SUCCESS) && (
           <div className="space-y-8 animate-in fade-in zoom-in-95 duration-500">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-8">
               <div className="space-y-1">
@@ -217,7 +238,7 @@ const App: React.FC = () => {
                 </button>
                 <h2 className="text-3xl font-extrabold text-slate-900">Your Learning Dashboard</h2>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 <button 
                   onClick={handleExportPDF}
                   disabled={isExporting}
@@ -232,12 +253,24 @@ const App: React.FC = () => {
                   )}
                   {isExporting ? 'Exporting...' : 'Export PDF'}
                 </button>
-                <button className="px-5 py-2.5 bg-theme-primary text-white rounded-xl font-semibold shadow-theme bg-theme-primary-hover transition-all flex items-center gap-2">
+                <button 
+                  onClick={startStudy}
+                  className="px-5 py-2.5 bg-white border border-theme-primary text-theme-primary rounded-xl font-semibold shadow-sm hover:bg-theme-secondary transition-all flex items-center gap-2"
+                >
+                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  Study Mode
+                </button>
+                <button 
+                  onClick={startQuiz}
+                  className="px-5 py-2.5 bg-theme-primary text-white rounded-xl font-semibold shadow-theme bg-theme-primary-hover transition-all flex items-center gap-2"
+                >
                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Play Deck
+                  Start Quiz
                 </button>
               </div>
             </div>
@@ -284,7 +317,7 @@ const App: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {result?.flashcards.map((card) => (
-                    <Flashcard key={card.id} card={card} animation={animation} />
+                    <Flashcard key={card.id} card={card} />
                   ))}
                 </div>
               </div>

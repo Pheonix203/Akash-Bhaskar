@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { Flashcard, GenerationResult } from "../types";
+import { Flashcard, GenerationResult, AdditionalInfo } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
 
@@ -79,6 +79,31 @@ export const generateFlashcardsFromDocument = async (
     summary: result.summary,
     keyTakeaways: result.keyTakeaways || [],
     flashcards: flashcardsWithIds
+  };
+};
+
+export const getMoreTopicInfo = async (topic: string): Promise<AdditionalInfo> => {
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: `Explain the concept of "${topic}" briefly but comprehensively for a student. Include historical context if relevant and provide educational depth. Prioritize sources like Wikipedia, Britannica, or academic sites.`,
+    config: {
+      tools: [{ googleSearch: {} }],
+    },
+  });
+
+  const explanation = response.text || "Could not find additional information.";
+  const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+  
+  const sources = groundingChunks
+    .filter((chunk: any) => chunk.web?.uri)
+    .map((chunk: any) => ({
+      title: chunk.web.title || "Reference",
+      uri: chunk.web.uri
+    }));
+
+  return {
+    explanation,
+    sources: sources.slice(0, 4) // Keep it concise
   };
 };
 

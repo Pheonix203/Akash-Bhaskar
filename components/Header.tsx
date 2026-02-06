@@ -1,12 +1,11 @@
 
 import React from 'react';
-import { FlipAnimation } from '../types';
 
 interface HeaderProps {
   currentTheme: string;
   onThemeChange: (themeName: string) => void;
-  currentAnimation: FlipAnimation;
-  onAnimationChange: (animation: FlipAnimation) => void;
+  onPlayDeck?: () => void;
+  hasResult: boolean;
 }
 
 const themes: { name: string; color: string }[] = [
@@ -19,9 +18,9 @@ const themes: { name: string; color: string }[] = [
 
 const Header: React.FC<HeaderProps> = ({ 
   currentTheme, 
-  onThemeChange, 
-  currentAnimation, 
-  onAnimationChange 
+  onThemeChange,
+  onPlayDeck,
+  hasResult
 }) => {
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
@@ -37,24 +36,18 @@ const Header: React.FC<HeaderProps> = ({
           </span>
         </div>
         
-        <div className="flex items-center gap-4 md:gap-8">
-          {/* Animation Selector */}
-          <div className="hidden lg:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400 mr-2">Animation:</span>
-            {(['3d-flip', 'fade', 'slide', 'zoom'] as FlipAnimation[]).map((anim) => (
-              <button
-                key={anim}
-                onClick={() => onAnimationChange(anim)}
-                className={`px-2 py-1 text-xs font-semibold rounded-md transition-all ${
-                  currentAnimation === anim 
-                  ? 'bg-theme-primary text-white shadow-sm' 
-                  : 'text-slate-500 hover:bg-slate-200'
-                }`}
-              >
-                {anim.replace('3d-', '')}
-              </button>
-            ))}
-          </div>
+        <div className="flex items-center gap-3 md:gap-6">
+          {hasResult && onPlayDeck && (
+            <button 
+              onClick={onPlayDeck}
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-theme-primary bg-theme-secondary rounded-lg hover:bg-theme-primary hover:text-white transition-all border border-theme-primary/10"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              </svg>
+              Play Deck
+            </button>
+          )}
 
           {/* Theme Selector */}
           <div className="hidden md:flex items-center bg-slate-100 p-1 rounded-full gap-1">

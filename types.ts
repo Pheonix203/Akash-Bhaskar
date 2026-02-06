@@ -17,7 +17,9 @@ export enum AppStatus {
   UPLOADING = 'UPLOADING',
   GENERATING = 'GENERATING',
   ERROR = 'ERROR',
-  SUCCESS = 'SUCCESS'
+  SUCCESS = 'SUCCESS',
+  QUIZ = 'QUIZ',
+  STUDY = 'STUDY'
 }
 
 export interface Theme {
@@ -28,4 +30,14 @@ export interface Theme {
   shadow: string;
 }
 
-export type FlipAnimation = '3d-flip' | 'fade' | 'slide' | 'zoom';
+export interface QuizState {
+  currentIndex: number;
+  knownIds: Set<string>;
+  unknownIds: Set<string>;
+  isFinished: boolean;
+}
+
+export interface AdditionalInfo {
+  explanation: string;
+  sources: { title: string; uri: string }[];
+}
